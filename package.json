@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@anyone-protocol/anyone-client": "^0.4.1",
+    "@auth0/auth0-react": "^2.2.4",
     "@supabase/supabase-js": "^2.46.1",
     "@tensorflow-models/handpose": "^0.1.0",
     "@tensorflow/tfjs": "^4.22.0",
@@ -13,6 +14,7 @@
     "face-api.js": "^0.22.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"

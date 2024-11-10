@@ -1,7 +1,9 @@
 // server.js
+require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const cors = require('cors');
 const { Anon } = require('@anyone-protocol/anyone-client');
+const { auth } = require('express-oauth2-jwt-bearer');
 
 const app = express();
 app.use(cors());
@@ -9,19 +11,19 @@ app.use(express.json());
 
 let anonInstance = null;
 
-app.post('/api/authenticate', (req, res) => {
-  const { username, password } = req.body;
-
-  // Implement your authentication logic here
-  // For demonstration purposes, we'll accept a specific username and password
-  if (username === 'user' && password === 'pass') {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false, message: 'Invalid credentials' });
-  }
+// Auth0 middleware to protect routes
+const checkJwt = auth({
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
 });
 
-app.post('/api/start-anon', async (req, res) => {
+// Authentication route (replace custom logic with Auth0)
+app.post('/api/authenticate', checkJwt, (req, res) => {
+  res.json({ success: true, message: 'Authenticated successfully with Auth0' });
+});
+
+// Start Anon client (protected by Auth0)
+app.post('/api/start-anon', checkJwt, async (req, res) => {
   try {
     if (!anonInstance) {
       anonInstance = new Anon();
@@ -40,7 +42,8 @@ app.post('/api/start-anon', async (req, res) => {
   }
 });
 
-app.post('/api/stop-anon', async (req, res) => {
+// Stop Anon client (protected by Auth0)
+app.post('/api/stop-anon', checkJwt, async (req, res) => {
   try {
     if (anonInstance) {
       await anonInstance.stop();
@@ -55,6 +58,6 @@ app.post('/api/stop-anon', async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log('Backend server listening on port 5000');
+app.listen(5432, () => {
+  console.log('Backend server listening on port 5432');
 });
